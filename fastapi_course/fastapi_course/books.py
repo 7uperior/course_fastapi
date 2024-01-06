@@ -22,6 +22,7 @@ async def read_favorite_book():
     return {"book_title": "My Favorite Book"}
 
 
+# path parameter
 @app.get("/books/{boook_id}")
 async def read_book(book_id: int):
     return {"book_titile": book_id}
