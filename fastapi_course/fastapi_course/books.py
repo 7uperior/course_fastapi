@@ -1,3 +1,4 @@
+from typing import Optional
 from fastapi import FastAPI
 from enum import Enum
 
@@ -21,14 +22,39 @@ class DirectionName(str, Enum):
     west = "West"
 
 
+# @app.get("/")
+# async def read_all_books():
+#     return BOOKS
+
+
+# Optional query - we can delite, but we can also don't delite the item (book)
+# skip 1 book
 @app.get("/")
-async def read_all_books():
+async def read_all_books_with_skiped(skip_book: Optional[str] = None):
+    if skip_book:
+        new_books = BOOKS.copy()
+        del new_books[skip_book]
+        return new_books
     return BOOKS
 
 
 @app.get("/{book_name}")
 async def read_book(book_name: str):
     return BOOKS[book_name]
+
+
+@app.post("/")
+async def create_book(book_title, book_author):
+    current_book_id = 0
+
+    if len(BOOKS) > 0:
+        for book in BOOKS:
+            x = int(book.split("_")[-1])
+            print(x)
+            if x > current_book_id:
+                current_book_id = x
+    BOOKS[f"book_{current_book_id+1}"] = {"title": book_title, "author": book_author}
+    return BOOKS[f"book_{current_book_id+1}"]
 
 
 @app.get("/books/mybook")
