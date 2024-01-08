@@ -43,6 +43,15 @@ async def read_book(book_name: str):
     return BOOKS[book_name]
 
 
+# 1. Create a new read book function that
+# uses query params instead of path params
+@app.get("/assignment/")
+async def read_book_query(book_name: Optional[str] = None):
+    if book_name:
+        return BOOKS[book_name]
+    return "No books have been choosen"
+
+
 @app.post("/")
 async def create_book(book_title, book_author):
     current_book_id = 0
@@ -67,14 +76,15 @@ async def update_book(book_name: str, book_title: str, book_author: str):
     return book_information
 
 
-# @app.delete("/{book_name}")
-# async def delete_book(book_name: str):
-#     del BOOKS[book_name]
-#     return f"Book {book_name} deleted"
+@app.delete("/{book_name}")
+async def delete_book(book_name: str):
+    del BOOKS[book_name]
+    return f"Book {book_name} deleted"
 
 
-# 2. Create a new delete book function that uses query params instead of path params
-@app.delete("/")
+# 2. Create a new delete book function that
+# uses query params instead of path params
+@app.delete("/assignment/")
 async def delete_book_query(book_name: Optional[str] = None):
     if book_name:
         del BOOKS[book_name]
