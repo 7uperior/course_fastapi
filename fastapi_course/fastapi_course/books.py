@@ -53,7 +53,10 @@ async def create_book(book_title, book_author):
             print(x)
             if x > current_book_id:
                 current_book_id = x
-    BOOKS[f"book_{current_book_id+1}"] = {"title": book_title, "author": book_author}
+    BOOKS[f"book_{current_book_id+1}"] = {
+        "title": book_title,
+        "author": book_author,
+    }
     return BOOKS[f"book_{current_book_id+1}"]
 
 
@@ -62,6 +65,21 @@ async def update_book(book_name: str, book_title: str, book_author: str):
     book_information = {"title": book_title, "author": book_author}
     BOOKS[book_name] = book_information
     return book_information
+
+
+# @app.delete("/{book_name}")
+# async def delete_book(book_name: str):
+#     del BOOKS[book_name]
+#     return f"Book {book_name} deleted"
+
+
+# 2. Create a new delete book function that uses query params instead of path params
+@app.delete("/")
+async def delete_book_query(book_name: Optional[str] = None):
+    if book_name:
+        del BOOKS[book_name]
+        return f"Book {book_name} deleted with query params"
+    return "No books have been deleted"
 
 
 @app.get("/books/mybook")

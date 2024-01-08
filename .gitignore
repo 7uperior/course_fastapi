@@ -2,3 +2,4 @@
 .env
 __pycache__/
 fastapi_course/fastapi_course/__pycache__/books.cpython-312.pyc
+fastapi_course/fastapi_course/__pycache__/
