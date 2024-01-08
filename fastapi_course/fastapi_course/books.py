@@ -30,7 +30,7 @@ class DirectionName(str, Enum):
 # Optional query - we can delite, but we can also don't delite the item (book)
 # skip 1 book
 @app.get("/")
-async def read_all_books_with_skiped(skip_book: Optional[str] = None):
+async def read_all_books(skip_book: Optional[str] = None):
     if skip_book:
         new_books = BOOKS.copy()
         del new_books[skip_book]
@@ -57,6 +57,13 @@ async def create_book(book_title, book_author):
     return BOOKS[f"book_{current_book_id+1}"]
 
 
+@app.put("/{book_name}")
+async def update_book(book_name: str, book_title: str, book_author: str):
+    book_information = {"title": book_title, "author": book_author}
+    BOOKS[book_name] = book_information
+    return book_information
+
+
 @app.get("/books/mybook")
 async def read_favorite_book():
     return {"book_title": "My Favorite Book"}
@@ -65,7 +72,7 @@ async def read_favorite_book():
 # path parameter
 @app.get("/books/{boook_id}")
 async def read_book_id(book_id: int):
-    return {"book_titile": book_id}
+    return {"book_title": book_id}
 
 
 @app.get("/directions/{direction_name}")
