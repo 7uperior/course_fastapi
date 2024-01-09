@@ -1,3 +1,4 @@
+from typing import Optional
 from fastapi import FastAPI
 from pydantic import BaseModel, Field
 from uuid import UUID
@@ -9,8 +10,11 @@ class Book(BaseModel):
     id: UUID
     title: str = Field(min_length=1)
     author: str
-    description: str = Field(
-        title="Description of the book", min_length=1, max_length=100
+    description: Optional[str] = Field(
+        default=None,
+        title="Description of the book",
+        min_length=1,
+        max_length=100,
     )
     rating: int
 
