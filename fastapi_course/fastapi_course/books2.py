@@ -24,7 +24,7 @@ class Book(BaseModel):
                 "id": uuid4(),
                 "title": "Vadim is the Best PRO Python Programmer",
                 "author": "Vadim Surin",
-                "description": "Vadim will do all the things needed to be a PRO Python Coder",
+                "description": "Vadim will be a PRO Python Coder",
                 "rating": 100,
             }
         }
@@ -59,6 +59,17 @@ async def read_book(book_id: UUID):
 async def create_book(book: Book):
     BOOKS.append(book)
     return book
+
+
+@app.put("/{book_id}")
+async def update_book(book_id: UUID, book: Book):
+    counter = 0
+
+    for x in BOOKS:
+        counter += 1
+        if x.id == book_id:
+            BOOKS[counter - 1] = book
+            return BOOKS[counter - 1]
 
 
 def create_books_no_api():
