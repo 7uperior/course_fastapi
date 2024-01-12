@@ -37,6 +37,18 @@ class Book(BaseModel):
         }
 
 
+class BookNoRating(BaseModel):
+    id: UUID
+    title: str = Field(min_length=1)
+    author: str = Field(min_length=1)
+    description: Optional[str] = Field(
+        default=None,
+        title="Description of the book",
+        min_length=1,
+        max_length=100,
+    )
+
+
 BOOKS = []
 
 
@@ -55,6 +67,9 @@ async def negative_number_exception_handler(
 
 @app.get("/")
 async def read_all_books(books_to_return: Optional[int] = None):
+    if books_to_return and books_to_return < 0:
+        raise NegativeNumberException(books_to_return=books_to_return)
+
     if len(BOOKS) < 1:
         create_books_no_api()
 
@@ -70,6 +85,14 @@ async def read_all_books(books_to_return: Optional[int] = None):
 
 @app.get("/books/{book_id}")
 async def read_book(book_id: UUID):
+    for x in BOOKS:
+        if x.id == book_id:
+            return x
+    raise raise_item_cannot_be_found_exception()
+
+
+@app.get("/books/rating/{book_id}", response_model=BookNoRating)
+async def read_book_no_rating(book_id: UUID):
     for x in BOOKS:
         if x.id == book_id:
             return x
