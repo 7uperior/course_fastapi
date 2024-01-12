@@ -1,5 +1,5 @@
 from typing import Optional
-from fastapi import FastAPI, HTTPException, Request, status
+from fastapi import FastAPI, HTTPException, Request, status, Form
 from pydantic import BaseModel, Field
 from uuid import UUID, uuid4
 from starlette.responses import JSONResponse
@@ -63,6 +63,11 @@ async def negative_number_exception_handler(
             f"books? You need to reed more!"
         },
     )
+
+
+@app.post("/books/login")
+async def books_login(username: str = Form(), password: str = Form()):
+    return {"username": username, "password": password}
 
 
 @app.get("/")
