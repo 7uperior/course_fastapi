@@ -1,7 +1,14 @@
 from typing import Optional
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from pydantic import BaseModel, Field
 from uuid import UUID, uuid4
+from starlette.responses import JSONResponse
+
+
+class NegativeNumberException(Exception):
+    def __init__(self, books_to_return):
+        self.books_to_return = books_to_return
+
 
 app = FastAPI()
 
@@ -33,6 +40,19 @@ class Book(BaseModel):
 BOOKS = []
 
 
+@app.exception_handler(NegativeNumberException)
+async def negative_number_exception_handler(
+    request: Request, exc: NegativeNumberException
+):
+    return JSONResponse(
+        status_code=418,
+        content={
+            "message": f"Hey, why do you want {exc.books_to_return} "
+            f"books? You need to reed more!"
+        },
+    )
+
+
 @app.get("/")
 async def read_all_books(books_to_return: Optional[int] = None):
     if len(BOOKS) < 1:
@@ -53,6 +73,7 @@ async def read_book(book_id: UUID):
     for x in BOOKS:
         if x.id == book_id:
             return x
+    raise raise_item_cannot_be_found_exception()
 
 
 @app.post("/")
@@ -70,6 +91,7 @@ async def update_book(book_id: UUID, book: Book):
         if x.id == book_id:
             BOOKS[counter - 1] = book
             return BOOKS[counter - 1]
+    raise raise_item_cannot_be_found_exception()
 
 
 @app.delete("/{book_id}")
