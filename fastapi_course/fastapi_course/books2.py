@@ -66,13 +66,8 @@ async def negative_number_exception_handler(
 
 
 @app.post("/books/login")
-async def books_login(username: str = Form(), password: str = Form()):
+async def book_login(username: str = Form(), password: str = Form()):
     return {"username": username, "password": password}
-
-
-@app.get("/header")
-async def read_header(random_header: Optional[str] = Header(None)):
-    return {"Random-Header": random_header}
 
 
 @app.get("/")
@@ -103,13 +98,13 @@ async def read_book(book_id: UUID):
 
 @app.get("/books/rating/{book_id}", response_model=BookNoRating)
 async def read_book_no_rating(book_id: UUID):
-    for x in BOOKS:
-        if x.id == book_id:
-            return x
+    for book in BOOKS:
+        if book.id == book_id:
+            return book
     raise raise_item_cannot_be_found_exception()
 
 
-@app.post("/", status_code=status.HTTP_201_CREATED)
+@app.post("/create-book", status_code=status.HTTP_201_CREATED)
 async def create_book(book: Book):
     BOOKS.append(book)
     return book
@@ -180,3 +175,46 @@ def raise_item_cannot_be_found_exception():
         detail="Book not found",
         headers={"X-Header_Error": "Nothing to be seen at UUID"},
     )
+
+
+"""
+Assignment
+
+Here is your opportunity to keep learning!
+
+We are going to create a fake authentication model for our project 2  :)
+
+
+
+Modify our API book_login, so that it will consume an API header,
+that will have a username  attribute and a password attribute,
+and it will receive a query parameter of which book the user wants to read.
+
+The username submitted must be called FastAPIUser
+and the password submitted must be test1234!
+
+If both the username and password are valid,
+return the book located specified by the query parameter
+
+If either username or password is invalid, return Invalid User
+
+Call this new function after calling the  read_all_books
+just to make sure we have setup a fake inventory
+
+Solution in next video
+"""
+
+# @app.post("/books/login/")
+# async def book_login(username: str = Form(), password: str = Form()):
+#     return {"username": username, "password": password}
+
+
+@app.post("/books/assignment/login/")
+async def book_login_assignment(
+    book_id: int,
+    username: Optional[str] = Header(None),
+    password: Optional[str] = Header(None),
+):
+    if username == "FastAPIUser" and password == "test1234!":
+        return BOOKS[book_id]
+    return "Invalid user"
